@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFearless } from '../../services/store';
 import { getAllVaultSessions } from '../../domain/vault';
 import { VaultCategory } from '../../types';
-import { BookOpen, Play, Search } from 'lucide-react';
+import { BookOpen, Play, Search, Headphones, Video } from 'lucide-react';
 
 const CATEGORIES: ('All' | VaultCategory)[] = [
   'All',
@@ -89,7 +89,12 @@ export const FearlessVaultScreen: React.FC = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-brand-cyan bg-brand-cyan/10 px-2 py-0.5 rounded-full border border-brand-cyan/20">
                     {session.category}
                   </span>
-                  <span className="text-[10px] font-mono text-brand-silver">5:00 Rehearsal</span>
+                  <span className="text-[10px] font-mono text-brand-silver">5:00</span>
+                  <span className="text-[10px] font-bold text-brand-silver flex items-center gap-1 bg-brand-dark px-2 py-0.5 rounded-full border border-brand-border/60">
+                    <Headphones className="w-3 h-3 text-brand-cyan" /> Audio
+                    <span className="text-brand-border">&bull;</span>
+                    <Video className="w-3 h-3 text-brand-cyan" /> Video
+                  </span>
                 </div>
 
                 <h3 className="text-base font-extrabold text-white group-hover:text-brand-cyan transition-colors">

@@ -144,7 +144,7 @@ export const FearlessHQScreen: React.FC = () => {
             <span className="text-[10px] font-black uppercase tracking-widest text-brand-cyan bg-brand-blue/20 px-2 py-0.5 rounded-full">
               Today&apos;s Highlighted Rep
             </span>
-            <span className="text-[11px] font-bold text-brand-silver">5 Minutes &bull; Binaural</span>
+            <span className="text-[11px] font-bold text-brand-silver">5 Min &bull; 🎧 Audio &amp; 🎥 Video</span>
           </div>
           <h3 className="text-lg font-black text-white">
             {todayDay.sessionTitle}
@@ -157,7 +157,7 @@ export const FearlessHQScreen: React.FC = () => {
             className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-blue to-brand-cyan text-black font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-95 shadow-lg shadow-brand-blue/30 transition-all active:scale-[0.98]"
           >
             <Play className="w-4 h-4 fill-black" />
-            <span>Start Fearless Rehearsal</span>
+            <span>Start Rehearsal (Audio / Video)</span>
           </button>
         </div>
       </div>

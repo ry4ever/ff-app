@@ -46,6 +46,10 @@ export interface VaultSession {
   targetHook: string;
   durationSeconds: number; // typically 300s (5 minutes)
   audioUrl?: string;
+  videoUrl?: string;
+  videoPosterUrl?: string;
+  mediaType?: 'audio' | 'video' | 'both';
+  tacticalVisualType?: 'pitch-tactics' | 'first-person-1v1' | 'stadium-ambience' | 'flow-animation';
   waveformType?: 'binaural-alpha' | 'binaural-theta' | 'stadium-ambience' | 'flow-frequency';
 }
 
