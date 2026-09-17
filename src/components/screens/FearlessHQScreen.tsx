@@ -9,8 +9,8 @@ import {
   ChevronDown,
   Sparkles,
   Trophy,
-  Info,
-  ArrowRight
+  ArrowRight,
+  Clock
 } from 'lucide-react';
 
 export const FearlessHQScreen: React.FC = () => {
@@ -18,7 +18,7 @@ export const FearlessHQScreen: React.FC = () => {
     athlete,
     toggleCustomMode,
     swapSession,
-    setActiveAudioSession,
+    openSession,
     incrementStreakForTesting
   } = useFearless();
 
@@ -32,7 +32,7 @@ export const FearlessHQScreen: React.FC = () => {
 
   const handleStartTodayRehearsal = () => {
     if (todaySession) {
-      setActiveAudioSession(todaySession);
+      openSession(todaySession);
     }
   };
 
@@ -48,142 +48,122 @@ export const FearlessHQScreen: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-24">
-      {/* Top Hero Command Center */}
-      <div className="bg-gradient-to-b from-brand-card to-brand-dark border border-brand-border rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-brand-blue/20 blur-3xl rounded-full pointer-events-none" />
-
-        {/* Header & Mode Toggle */}
-        <div className="flex items-center justify-between gap-2 mb-5">
-          <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-brand-cyan tracking-wider uppercase">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Command Center</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white mt-0.5">
-              Fearless HQ
-            </h2>
-          </div>
-
-          {/* Screen 3 Sliding Toggle: Recommended Blueprint <-> Fearless Custom */}
-          <div className="flex items-center gap-2 bg-brand-dark/90 p-1 rounded-2xl border border-brand-border">
-            <button
-              onClick={() => athlete.isCustomMode && toggleCustomMode()}
-              className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all ${
-                !athlete.isCustomMode
-                  ? 'bg-brand-blue text-black shadow-md'
-                  : 'text-brand-silver hover:text-white'
-              }`}
-            >
-              Recommended
-            </button>
-            <button
-              onClick={() => !athlete.isCustomMode && toggleCustomMode()}
-              className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all flex items-center gap-1 ${
-                athlete.isCustomMode
-                  ? 'bg-brand-cyan text-black shadow-md'
-                  : 'text-brand-silver hover:text-white'
-              }`}
-            >
-              <Sliders className="w-3 h-3" />
-              Custom
-            </button>
-          </div>
+    <div className="space-y-4 pb-20">
+      {/* Athlete Header & Mode Switch */}
+      <div className="flex items-center justify-between px-1">
+        <div>
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-brand-cyan">
+            {athlete.archetype}
+          </span>
+          <h2 className="text-xl font-black text-white">
+            Today&apos;s Focus
+          </h2>
         </div>
 
-        {/* Top Metric Strip: Blueprint Screen 2 "Composure Streak: 4/5 Days" + Flame Icon */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
-          {/* Streak Card */}
-          <div className="bg-brand-dark/80 border border-brand-border/90 rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="flex items-center justify-between text-brand-silver text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Composure Streak</span>
-              <Flame className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
-            </div>
-            <div className="text-xl sm:text-2xl font-black text-white flex items-baseline gap-1">
-              <span>{athlete.currentStreak}</span>
-              <span className="text-xs text-brand-silver font-semibold">/ 45 Days</span>
-            </div>
-            <div className="w-full bg-brand-card h-1.5 rounded-full overflow-hidden mt-2 border border-brand-border/40">
-              <div
-                className="h-full bg-gradient-to-r from-amber-400 to-amber-200 rounded-full"
-                style={{ width: `${Math.min(100, (athlete.currentStreak / 45) * 100)}%` }}
-              />
-            </div>
-            <span className="text-[9px] text-brand-silver/90 mt-1 block">
-              {45 - athlete.currentStreak > 0 
-                ? `${45 - athlete.currentStreak} days to Fearless Jersey` 
-                : '🏆 Official Jersey Unlocked!'}
-            </span>
-          </div>
-
-          {/* Composure Score Card */}
-          <div className="bg-brand-dark/80 border border-brand-border/90 rounded-2xl p-3.5 relative overflow-hidden">
-            <div className="flex items-center justify-between text-brand-silver text-[10px] font-bold uppercase tracking-wider mb-1">
-              <span>Composure Index</span>
-              <Trophy className="w-3.5 h-3.5 text-brand-cyan" />
-            </div>
-            <div className="text-xl sm:text-2xl font-black text-white flex items-baseline gap-1">
-              <span>{athlete.composureScore}</span>
-              <span className="text-xs text-brand-cyan font-semibold">/ 100</span>
-            </div>
-            <div className="w-full bg-brand-card h-1.5 rounded-full overflow-hidden mt-2 border border-brand-border/40">
-              <div
-                className="h-full bg-gradient-to-r from-brand-blue to-brand-cyan rounded-full shadow-[0_0_6px_#69E0FA]"
-                style={{ width: `${athlete.composureScore}%` }}
-              />
-            </div>
-            <span className="text-[9px] text-brand-cyan mt-1 block font-semibold truncate">
-              {athlete.archetype}
-            </span>
-          </div>
-        </div>
-
-        {/* Primary CTA: [ Start Fearless Rehearsal ] */}
-        <div className="bg-gradient-to-r from-brand-blue/20 via-brand-card to-brand-dark border border-brand-blue/40 rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-brand-cyan bg-brand-blue/20 px-2 py-0.5 rounded-full">
-              Today&apos;s Highlighted Rep
-            </span>
-            <span className="text-[11px] font-bold text-brand-silver">5 Min &bull; 🎧 Audio &amp; 🎥 Video</span>
-          </div>
-          <h3 className="text-lg font-black text-white">
-            {todayDay.sessionTitle}
-          </h3>
-          <p className="text-xs text-brand-silver/90 mt-1 mb-3">
-            {todaySession?.productNarrative || 'Rehearse cognitive composure and explosive readiness.'}
-          </p>
+        {/* Schedule Mode Switcher */}
+        <div className="flex bg-brand-card/80 p-0.5 rounded-xl border border-brand-border/70 text-[10px] font-bold">
           <button
-            onClick={handleStartTodayRehearsal}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-blue to-brand-cyan text-black font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-95 shadow-lg shadow-brand-blue/30 transition-all active:scale-[0.98]"
+            onClick={() => athlete.isCustomMode && toggleCustomMode()}
+            className={`px-2.5 py-1 rounded-lg transition-all ${
+              !athlete.isCustomMode
+                ? 'bg-brand-blue text-black font-black shadow-sm'
+                : 'text-brand-silver hover:text-white'
+            }`}
           >
-            <Play className="w-4 h-4 fill-black" />
-            <span>Start Rehearsal (Audio / Video)</span>
+            Recommended
+          </button>
+          <button
+            onClick={() => !athlete.isCustomMode && toggleCustomMode()}
+            className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
+              athlete.isCustomMode
+                ? 'bg-brand-cyan text-black font-black shadow-sm'
+                : 'text-brand-silver hover:text-white'
+            }`}
+          >
+            <Sliders className="w-2.5 h-2.5" />
+            <span>Custom</span>
           </button>
         </div>
       </div>
 
-      {/* Screen 2/3: Vertical 7-Day Stack Calendar */}
-      <div>
-        <div className="flex items-center justify-between mb-3 px-1">
-          <div>
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              7-Day Mental Training Blueprint
-            </h3>
-            <p className="text-[11px] text-brand-silver">
-              {athlete.isCustomMode
-                ? 'Fearless Custom: Tap edit icon on any day to swap audio rep'
-                : 'Auto-balanced weekly schedule tailored to your archetype'}
-            </p>
-          </div>
+      {/* Hero Card: Today's Highlighted Rehearsal */}
+      <div className="bg-gradient-to-br from-brand-card via-brand-dark to-brand-card/80 border border-brand-border rounded-3xl p-5 relative overflow-hidden shadow-xl shadow-brand-blue/5">
+        <div className="flex items-center justify-between text-[10px] font-bold text-brand-silver mb-2">
+          <span className="text-brand-cyan uppercase tracking-wider bg-brand-cyan/10 px-2 py-0.5 rounded-full border border-brand-cyan/20">
+            {todayDay.category}
+          </span>
+          <span className="flex items-center gap-1 text-white/80 font-mono">
+            <Clock className="w-3 h-3 text-brand-cyan" />
+            5 Min
+          </span>
+        </div>
 
+        <h3 className="text-xl font-black text-white tracking-tight leading-tight">
+          {todayDay.sessionTitle}
+        </h3>
+
+        <p className="text-xs text-brand-silver/90 mt-1.5 line-clamp-2 leading-relaxed">
+          {todaySession?.productNarrative || 'Rehearse cognitive composure and explosive readiness.'}
+        </p>
+
+        <button
+          onClick={handleStartTodayRehearsal}
+          className="mt-4 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-brand-blue to-brand-cyan text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-95 shadow-lg shadow-brand-blue/20 transition-all active:scale-[0.98]"
+        >
+          <Play className="w-4 h-4 fill-black" />
+          <span>Start Rehearsal</span>
+        </button>
+      </div>
+
+      {/* Metrics Strip: Compact & Clean */}
+      <div className="grid grid-cols-2 gap-2.5">
+        {/* Streak Pill */}
+        <div className="bg-brand-card/60 border border-brand-border/70 rounded-2xl p-3 flex items-center justify-between">
+          <div>
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-brand-silver block">
+              Streak
+            </span>
+            <div className="text-lg font-black text-white flex items-baseline gap-1 mt-0.5">
+              <span>{athlete.currentStreak}</span>
+              <span className="text-[10px] text-brand-silver font-semibold">/ 45d</span>
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
+            <Flame className="w-4 h-4 fill-amber-400" />
+          </div>
+        </div>
+
+        {/* Composure Score Pill */}
+        <div className="bg-brand-card/60 border border-brand-border/70 rounded-2xl p-3 flex items-center justify-between">
+          <div>
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-brand-silver block">
+              Composure
+            </span>
+            <div className="text-lg font-black text-white flex items-baseline gap-1 mt-0.5">
+              <span>{athlete.composureScore}</span>
+              <span className="text-[10px] text-brand-cyan font-semibold">/ 100</span>
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-brand-cyan">
+            <Trophy className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
+
+      {/* Weekly Schedule Timeline */}
+      <div className="space-y-2 pt-1">
+        <div className="flex items-center justify-between px-1">
+          <h3 className="text-xs font-black uppercase tracking-wider text-brand-silver">
+            This Week&apos;s Blueprint
+          </h3>
           {athlete.isCustomMode && (
-            <span className="text-[10px] font-bold text-brand-cyan bg-brand-cyan/10 border border-brand-cyan/20 px-2 py-0.5 rounded-full">
-              Editing Unlocked
+            <span className="text-[9px] font-bold text-brand-cyan bg-brand-cyan/10 px-2 py-0.5 rounded-full">
+              Custom Enabled
             </span>
           )}
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {athlete.activeSchedule.map((day) => {
             const isToday = day.isToday;
             const isCompleted = day.isCompleted;
@@ -191,83 +171,68 @@ export const FearlessHQScreen: React.FC = () => {
             return (
               <div
                 key={day.dayIndex}
-                className={`p-4 rounded-2xl border transition-all ${
+                className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
                   isToday
-                    ? 'bg-brand-card/90 border-brand-cyan/80 shadow-lg shadow-brand-blue/15 ring-1 ring-brand-cyan/30'
+                    ? 'bg-brand-card border-brand-cyan/70 shadow-md shadow-brand-blue/10 ring-1 ring-brand-cyan/30'
                     : isCompleted
-                    ? 'bg-brand-card/40 border-brand-border/60 opacity-80'
-                    : 'bg-brand-card/70 border-brand-border hover:border-brand-border/90'
+                    ? 'bg-brand-card/40 border-brand-border/40 opacity-70'
+                    : 'bg-brand-card/50 border-brand-border/60 hover:bg-brand-card/80'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {/* Day Pill */}
-                    <div
-                      className={`w-11 h-11 rounded-xl flex flex-col items-center justify-center font-bold text-center shrink-0 border ${
-                        isToday
-                          ? 'bg-brand-blue text-black border-brand-cyan shadow-sm'
-                          : isCompleted
-                          ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/30'
-                          : 'bg-brand-dark text-brand-silver border-brand-border'
-                      }`}
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {/* Day Badge */}
+                  <div
+                    className={`w-9 h-9 rounded-xl flex flex-col items-center justify-center font-bold text-center shrink-0 border ${
+                      isToday
+                        ? 'bg-brand-blue text-black border-brand-cyan'
+                        : isCompleted
+                        ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/30'
+                        : 'bg-brand-dark text-brand-silver border-brand-border'
+                    }`}
+                  >
+                    <span className="text-[8px] uppercase tracking-wider">{day.dayShort}</span>
+                    <span className="text-[11px] font-black leading-none">D{day.dayIndex + 1}</span>
+                  </div>
+
+                  {/* Title & Category */}
+                  <div className="min-w-0">
+                    <h4 className="text-xs font-bold text-white truncate leading-tight">
+                      {day.sessionTitle}
+                    </h4>
+                    <span className="text-[9px] text-brand-silver block uppercase tracking-wider mt-0.5">
+                      {day.category}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right Action / Status */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {isCompleted ? (
+                    <div className="w-7 h-7 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        const sess = getVaultSessionById(day.sessionId);
+                        if (sess) openSession(sess);
+                      }}
+                      className="w-7 h-7 rounded-xl bg-brand-card hover:bg-brand-cardHover border border-brand-border flex items-center justify-center text-brand-cyan hover:text-white transition-colors"
+                      title="Play Rehearsal"
                     >
-                      <span className="text-[9px] uppercase tracking-wider">{day.dayShort}</span>
-                      <span className="text-xs font-black">D{day.dayIndex + 1}</span>
-                    </div>
+                      <Play className="w-3 h-3 fill-current" />
+                    </button>
+                  )}
 
-                    {/* Session Info */}
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-brand-silver uppercase tracking-wider">
-                          {day.category}
-                        </span>
-                        {day.isCustomSwap && (
-                          <span className="text-[9px] font-bold text-brand-cyan bg-brand-cyan/10 px-1.5 rounded">
-                            Custom Rep
-                          </span>
-                        )}
-                      </div>
-                      <h4 className="text-sm font-extrabold text-white leading-tight">
-                        {day.sessionTitle}
-                      </h4>
-                      <p className="text-[10px] text-brand-silver/80 mt-0.5">
-                        {day.durationMinutes} min visual rehearsal &bull; {day.dayName}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Actions & Status */}
-                  <div className="flex items-center gap-2">
-                    {isCompleted ? (
-                      <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-950/40 border border-emerald-500/30 px-2 py-1 rounded-lg">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span className="text-[10px]">Complete</span>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          const sess = getVaultSessionById(day.sessionId);
-                          if (sess) setActiveAudioSession(sess);
-                        }}
-                        className="p-2 rounded-xl bg-brand-card hover:bg-brand-cardHover border border-brand-border text-brand-cyan hover:text-white transition-colors"
-                        title="Play Rehearsal"
-                      >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                      </button>
-                    )}
-
-                    {/* Screen 3: Dropdown edit icon on all daily cards in Custom mode */}
-                    {athlete.isCustomMode && (
-                      <button
-                        onClick={() => handleOpenSwapSheet(day.dayIndex)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-brand-blue/15 hover:bg-brand-blue/30 border border-brand-blue/40 text-brand-cyan text-xs font-bold transition-all"
-                        title="Swap audio rep from Vault"
-                      >
-                        <span>Swap</span>
-                        <ChevronDown className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
+                  {athlete.isCustomMode && (
+                    <button
+                      onClick={() => handleOpenSwapSheet(day.dayIndex)}
+                      className="p-1.5 rounded-lg text-brand-silver hover:text-brand-cyan hover:bg-brand-card transition-colors"
+                      title="Swap Session"
+                    >
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
             );
@@ -275,55 +240,50 @@ export const FearlessHQScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Instant Demo Utilities Bar */}
-      <div className="p-3.5 bg-brand-dark border border-brand-border/60 rounded-2xl">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-brand-silver uppercase tracking-wider mb-2">
-          <Info className="w-3.5 h-3.5 text-brand-cyan" />
-          <span>Milestone Test Controls</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
+      {/* Subtle Collapsed Demo Drawer (completely tucked away from main UI) */}
+      <details className="mt-6 pt-4 border-t border-brand-border/40 text-[10px] text-brand-silver/60">
+        <summary className="cursor-pointer hover:text-brand-cyan transition-colors flex items-center gap-1 font-semibold">
+          <Sparkles className="w-3 h-3" />
+          <span>Demo Controls</span>
+        </summary>
+        <div className="mt-2.5 flex flex-wrap gap-2 p-2.5 bg-brand-dark rounded-xl border border-brand-border/50">
           <button
             onClick={() => incrementStreakForTesting(43)}
-            className="px-2.5 py-1 rounded-lg bg-brand-card hover:bg-brand-cardHover border border-brand-border text-[10px] font-bold text-brand-silver hover:text-white transition-colors"
+            className="px-2.5 py-1 rounded-lg bg-brand-card hover:bg-brand-cardHover border border-brand-border text-[9px] font-bold text-brand-silver hover:text-white"
           >
-            Set Streak to 43 (Trigger Behavioral Nudge)
+            Set Streak 43
           </button>
           <button
             onClick={() => incrementStreakForTesting(45)}
-            className="px-2.5 py-1 rounded-lg bg-brand-blue/20 hover:bg-brand-blue/30 border border-brand-blue/50 text-[10px] font-bold text-brand-cyan transition-colors flex items-center gap-1"
+            className="px-2.5 py-1 rounded-lg bg-brand-blue/20 hover:bg-brand-blue/30 border border-brand-blue/40 text-[9px] font-bold text-brand-cyan"
           >
-            <Trophy className="w-3 h-3" />
-            <span>Set Streak to 45 (Trigger Jersey Unlock AC 4.2)</span>
+            Set Streak 45 (Jersey Unlock)
           </button>
         </div>
-      </div>
+      </details>
 
-      {/* Screen 3 Bottom Sheet: Full Audio Vault Library for Swapping */}
+      {/* Screen 3 Bottom Sheet: Vault Library for Swapping */}
       {activeBottomSheetDay !== null && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 animate-in fade-in">
-          <div className="w-full max-w-lg bg-brand-dark border border-brand-border rounded-t-3xl sm:rounded-3xl p-6 max-h-[85vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-4">
+          <div className="w-full max-w-lg bg-brand-dark border border-brand-border rounded-t-3xl sm:rounded-3xl p-5 max-h-[80vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-3">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-cyan">
-                  Fearless Custom Mode
+                <span className="text-[9px] font-bold uppercase tracking-widest text-brand-cyan">
+                  Custom Mode
                 </span>
-                <h3 className="text-base font-extrabold text-white">
-                  Swap Audio Rep for {athlete.activeSchedule[activeBottomSheetDay]?.dayName}
+                <h3 className="text-sm font-extrabold text-white">
+                  Swap {athlete.activeSchedule[activeBottomSheetDay]?.dayName}
                 </h3>
               </div>
               <button
                 onClick={() => setActiveBottomSheetDay(null)}
-                className="text-xs font-bold text-brand-silver hover:text-white px-2 py-1 bg-brand-card rounded-lg"
+                className="text-xs font-bold text-brand-silver hover:text-white px-2.5 py-1 bg-brand-card rounded-lg"
               >
                 Done
               </button>
             </div>
 
-            <p className="text-xs text-brand-silver mb-3">
-              Select any audio rehearsal from the Fearless Vault. Swapping will instant-sync to the Parent Dashboard.
-            </p>
-
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {vaultSessions.map(session => {
                 const isSelected = athlete.activeSchedule[activeBottomSheetDay]?.sessionId === session.id;
 
@@ -331,31 +291,26 @@ export const FearlessHQScreen: React.FC = () => {
                   <button
                     key={session.id}
                     onClick={() => handleSelectSwap(session.id)}
-                    className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                    className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
                       isSelected
-                        ? 'bg-brand-blue/25 border-brand-cyan text-white shadow-md'
-                        : 'bg-brand-card border-brand-border text-brand-silver hover:text-white hover:border-brand-border/80'
+                        ? 'bg-brand-blue/20 border-brand-cyan text-white shadow-sm'
+                        : 'bg-brand-card/60 border-brand-border/60 text-brand-silver hover:text-white hover:bg-brand-card'
                     }`}
                   >
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-brand-cyan block">
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-brand-cyan block">
                         {session.category}
                       </span>
-                      <h4 className="text-xs font-extrabold text-white">{session.title}</h4>
-                      <p className="text-[10px] text-brand-silver/80 mt-0.5 line-clamp-1">
-                        {session.productNarrative}
-                      </p>
+                      <h4 className="text-xs font-bold text-white">{session.title}</h4>
                     </div>
 
-                    <div className="shrink-0 ml-3">
+                    <div className="shrink-0 ml-2">
                       {isSelected ? (
-                        <span className="text-[10px] font-bold text-brand-cyan bg-brand-cyan/20 px-2 py-1 rounded">
+                        <span className="text-[9px] font-bold text-brand-cyan bg-brand-cyan/20 px-2 py-0.5 rounded">
                           Current
                         </span>
                       ) : (
-                        <div className="p-2 rounded-lg bg-brand-cardHover border border-brand-border text-brand-silver">
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </div>
+                        <ArrowRight className="w-3.5 h-3.5 text-brand-silver" />
                       )}
                     </div>
                   </button>

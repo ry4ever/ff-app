@@ -91,11 +91,26 @@ export const FEARLESS_VAULT: VaultSession[] = [
     category: 'Sharpen Your Game',
     productNarrative: 'Condition split-second decision-making and vision when executing passes in the final third.',
     targetHook: 'Slow down peripheral vision to thread line-breaking key passes through defensive blocks.',
-    durationSeconds: 300,
+    durationSeconds: 610, // ~10 minutes
     mediaType: 'both',
     tacticalVisualType: 'pitch-tactics',
+    videoUrl: '/media/better-final-ball/final-ball-video.mov',
     videoPosterUrl: 'https://images.unsplash.com/photo-1511886929837-354d827aae26?w=600&auto=format&fit=crop&q=80',
-    waveformType: 'flow-frequency'
+    waveformType: 'flow-frequency',
+    variationAudio: {
+      interactive: {
+        withMusic: '/media/better-final-ball/interactive-music.mp3',
+        withoutMusic: '/media/better-final-ball/interactive-nomusic.mp3'
+      },
+      'full-guidance': {
+        withMusic: '/media/better-final-ball/fullguidance-music.mp3',
+        withoutMusic: '/media/better-final-ball/fullguidance-nomusic.mp3'
+      },
+      relaxation: {
+        withMusic: '/media/better-final-ball/relaxation-music.mp3',
+        withoutMusic: '/media/better-final-ball/relaxation-nomusic.mp3'
+      }
+    }
   },
   {
     id: 'flow-trigger',

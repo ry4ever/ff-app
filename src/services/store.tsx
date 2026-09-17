@@ -11,6 +11,7 @@ import {
   VaultSession,
   Role,
   TelemetryVerificationResult,
+  SessionVariation,
 } from '../types';
 import { mapBarrierToArchetype } from '../domain/archetypes';
 import { generate7DayBlueprint, swapDailySession, importRoutineToSchedule } from '../domain/scheduler';
@@ -31,6 +32,19 @@ interface FearlessStore {
 
   activeAudioSession: VaultSession | null;
   setActiveAudioSession: (session: VaultSession | null) => void;
+
+  // Session modal & variation configuration
+  selectedSessionForSetup: VaultSession | null;
+  selectedVariation: SessionVariation;
+  isMusicEnabled: boolean;
+  sessionModalStep: 'select-variation' | 'active-playback' | null;
+  openSession: (session: VaultSession) => void;
+  setSelectedVariation: (variation: SessionVariation) => void;
+  setIsMusicEnabled: (enabled: boolean) => void;
+  toggleMusic: () => void;
+  startSessionPlayback: () => void;
+  backToVariationSelect: () => void;
+  closeSession: () => void;
 
   conversationStarters: ConversationStarter[];
   notifications: PushNotification[];
@@ -106,6 +120,11 @@ export const FearlessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [activePairingCode, setActivePairingCode] = useState<string | null>('FEAR-4892');
 
   const [activeAudioSession, setActiveAudioSession] = useState<VaultSession | null>(null);
+  const [selectedSessionForSetup, setSelectedSessionForSetup] = useState<VaultSession | null>(null);
+  const [selectedVariation, setSelectedVariation] = useState<SessionVariation>('interactive');
+  const [isMusicEnabled, setIsMusicEnabled] = useState<boolean>(true);
+  const [sessionModalStep, setSessionModalStep] = useState<'select-variation' | 'active-playback' | null>(null);
+
   const [conversationStarters, setConversationStarters] = useState<ConversationStarter[]>([
     getDefaultConversationStarter(INITIAL_ATHLETE.name)
   ]);
@@ -214,10 +233,43 @@ export const FearlessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       // 2. Generate Conversation Starter card for Parent Dashboard
       const starter = createConversationStarter(athlete.id, athlete.name, activeAudioSession);
+      if (selectedVariation === 'interactive') {
+        starter.headline = `${starter.headline} • Interactive (3 Unguided Reps)`;
+        starter.promptText = `${starter.promptText} Alex completed 3 blocks of 45-second solo repetitions without coach guidance.`;
+      } else if (selectedVariation === 'relaxation') {
+        starter.headline = `${starter.headline} • Evening Relaxation`;
+        starter.promptText = `${starter.promptText} Alex listened in passive relaxation mode to unwind and absorb mental composure.`;
+      }
       setConversationStarters(prev => [starter, ...prev]);
     }
 
     return verification;
+  };
+
+  const openSession = (session: VaultSession) => {
+    setSelectedSessionForSetup(session);
+    setSessionModalStep('select-variation');
+  };
+
+  const toggleMusic = () => {
+    setIsMusicEnabled(prev => !prev);
+  };
+
+  const startSessionPlayback = () => {
+    if (selectedSessionForSetup) {
+      setActiveAudioSession(selectedSessionForSetup);
+      setSessionModalStep('active-playback');
+    }
+  };
+
+  const backToVariationSelect = () => {
+    setSessionModalStep('select-variation');
+  };
+
+  const closeSession = () => {
+    setSessionModalStep(null);
+    setSelectedSessionForSetup(null);
+    setActiveAudioSession(null);
   };
 
   const handleStripeSubscription = (email: string, childName: string): string => {
@@ -290,6 +342,17 @@ export const FearlessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         activePairingCode,
         activeAudioSession,
         setActiveAudioSession,
+        selectedSessionForSetup,
+        selectedVariation,
+        isMusicEnabled,
+        sessionModalStep,
+        openSession,
+        setSelectedVariation,
+        setIsMusicEnabled,
+        toggleMusic,
+        startSessionPlayback,
+        backToVariationSelect,
+        closeSession,
         conversationStarters,
         notifications,
         jerseyModalOpen,

@@ -38,19 +38,69 @@ export type VaultCategory =
   | 'Match Day Prep'
   | 'Flow / The Zone';
 
+export type SessionVariation = 'interactive' | 'full-guidance' | 'relaxation';
+
+export interface VariationAudioFiles {
+  withMusic: string;
+  withoutMusic: string;
+}
+
+export interface VariationAudioMap {
+  interactive: VariationAudioFiles;
+  'full-guidance': VariationAudioFiles;
+  relaxation: VariationAudioFiles;
+}
+
+export interface VariationDetail {
+  id: SessionVariation;
+  number: number;
+  title: string;
+  badge: string;
+  description: string;
+  tags: string[];
+}
+
+export const SESSION_VARIATION_DETAILS: Record<SessionVariation, VariationDetail> = {
+  interactive: {
+    id: 'interactive',
+    number: 1,
+    title: 'Interactive',
+    badge: 'Active Training & Solo Reps',
+    description: 'My guidance will include 3 blocks of 45 seconds where you will do repetitions on your own without my guidance',
+    tags: ['3 × 45s Unguided Blocks', 'Real-Time Interval Cues', 'Audio Coaching + Self-Reps']
+  },
+  'full-guidance': {
+    id: 'full-guidance',
+    number: 2,
+    title: 'Full guidance',
+    badge: 'Continuous Coaching',
+    description: 'My voice will guide you through all of the visualisation.',
+    tags: ['100% Guided Voice', 'Continuous Imagery', 'Scenario Mastery']
+  },
+  relaxation: {
+    id: 'relaxation',
+    number: 3,
+    title: 'Relaxation',
+    badge: 'Evening & Recovery',
+    description: 'Use before bed or when you are relaxing. This is less interactive where you can simply relax and let my words wash over you.',
+    tags: ['Bedtime & Recovery', 'Deep Calming Frequencies', 'Passive Decompression']
+  }
+};
+
 export interface VaultSession {
   id: string;
   title: string;
   category: VaultCategory;
   productNarrative: string;
   targetHook: string;
-  durationSeconds: number; // typically 300s (5 minutes)
+  durationSeconds: number; // typically 300s (5 minutes) or actual audio length
   audioUrl?: string;
   videoUrl?: string;
   videoPosterUrl?: string;
   mediaType?: 'audio' | 'video' | 'both';
   tacticalVisualType?: 'pitch-tactics' | 'first-person-1v1' | 'stadium-ambience' | 'flow-animation';
   waveformType?: 'binaural-alpha' | 'binaural-theta' | 'stadium-ambience' | 'flow-frequency';
+  variationAudio?: VariationAudioMap;
 }
 
 export interface DaySchedule {
